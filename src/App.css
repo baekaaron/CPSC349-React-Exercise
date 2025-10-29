@@ -1,0 +1,115 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+#header {
+  background-color: #2B3E4D;
+  min-width: 100%;
+  min-height: 150px;
+  margin-top: -35px;
+}
+
+#logo {
+  font-size: 3rem;
+  font-weight: bold;
+  text-align: center;
+  color: white;
+  padding-top: 40px;
+  padding-bottom: 10px;
+}
+
+#nav {
+  background-color: #33485F;
+  min-width: 100%;
+  min-height: 75px;
+  text-align: center;
+}
+
+#form {
+  display: inline-block;
+}
+
+#search {
+  font-size: 16px;
+  text-align: left;
+  width: 165px;
+  height: 15px;
+  border-radius: 10px;
+  margin-top: 15px;
+  padding: 10px;
+  margin-right: 10px;
+}
+
+#sort {
+  display: inline-block;
+  width: 190px;
+  padding: 8px;
+  border-radius: 10px;
+  font-size: 16px;
+  text-align: left;
+}
+
+#main {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 0.5rem;
+  padding: 1rem;
+  background-color: #EDEDED;
+}
+
+.movie {
+  overflow: hidden;
+  border-radius: 10px;
+  background-color: white;
+  margin: 5px;
+}
+
+.poster {
+  align-items: center;
+  padding: 15px;
+  justify-content: center;
+  display: flex;
+}
+
+.poster img {
+  border-radius: 10px;
+  width: 200px;
+  height: 100%;
+  object-fit: cover;
+  display: fixed;
+}
+
+.movieInfo {
+  margin-top: -30px;
+  margin-bottom: 15px;
+  text-align: center;
+  overflow: hidden;
+  object-fit: contain;
+  padding: 10px;
+}
+
+#pagination {
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  background-color: #EDEDED;
+  min-height: 100px;
+  gap: 1rem;
+  font-size: 20px;
+}
+
+#pagination button {
+  background-color: #3297D9;
+  color: white;
+  border-radius: 10px;
+  border-width: 0px;
+  padding: 0.5rem 1rem;
+  font-size: 16px;
+}
+
+#pagination button:hover {
+  background-color: #4A799A;
+  cursor: pointer;
+}
