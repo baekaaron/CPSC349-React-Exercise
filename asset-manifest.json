@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/CPSC349-React-Exercise/static/css/main.06f1363d.css",
+    "main.js": "/CPSC349-React-Exercise/static/js/main.424a3c5f.js",
+    "static/js/453.814371f3.chunk.js": "/CPSC349-React-Exercise/static/js/453.814371f3.chunk.js",
+    "index.html": "/CPSC349-React-Exercise/index.html",
+    "main.06f1363d.css.map": "/CPSC349-React-Exercise/static/css/main.06f1363d.css.map",
+    "main.424a3c5f.js.map": "/CPSC349-React-Exercise/static/js/main.424a3c5f.js.map",
+    "453.814371f3.chunk.js.map": "/CPSC349-React-Exercise/static/js/453.814371f3.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.06f1363d.css",
+    "static/js/main.424a3c5f.js"
+  ]
+}
