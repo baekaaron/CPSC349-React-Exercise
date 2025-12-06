@@ -1,101 +1,174 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
 
-const apiKey = process.env.REACT_APP_TMDB_API_KEY;
-const baseUrl = "https://api.themoviedb.org/3";
-const imgPath = "https://image.tmdb.org/t/p/w1280";
-const popularApi = `${baseUrl}/movie/popular?api_key=${apiKey}`;
-const searchApi = `${baseUrl}/search/movie?api_key=${apiKey}&query=`;
+const baseUrl = "https://www.themealdb.com/api/json/v1/1/";
+const mealsPerPage = 20;
 
 function App() {
-  const [movies, setMovies] = useState([]);
+  const [meals, setMeals] = useState([]);
+  const [displayedMeals, setDisplayedMeals] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [sortValue, setSortValue] = useState("");
+  const [selectedMeal, setSelectedMeal] = useState(null);
+  const [filter, setFilter] = useState("All");
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [lastUrl, setLastUrl] = useState(popularApi);
 
-  useEffect(() => {getMovies(popularApi, 1);}, []);
+  useEffect(() => {
+    async function fetchAllMeals() {
+      try {
+        const catRes = await fetch(`${baseUrl}categories.php`);
+        const catData = await catRes.json();
+        const cats = catData.categories.map(c => c.strCategory);
+        setCategories(cats);
 
-  async function getMovies(url, page = 1) {
-    try {
-      const res = await fetch(`${url}&page=${page}`);
-      const data = await res.json();
-
-      setMovies(data.results || []);
-      setCurrentPage(data.page);
-      setTotalPages(data.total_pages);
-      setLastUrl(url);
-    } catch (err) {
-      console.error("Error fetching movies:", err);
+        const allMeals = [];
+        for (let cat of cats) {
+          const res = await fetch(`${baseUrl}filter.php?c=${cat}`);
+          const data = await res.json();
+          if (data.meals) {
+            const mealsWithCat = data.meals.map(meal => ({
+              ...meal,
+              strCategory: cat
+            }));
+            allMeals.push(...mealsWithCat);
+          }
+        }
+        setMeals(allMeals);
+      } catch (err) {
+        console.error("Error fetching meals:", err);
+      }
     }
+
+    fetchAllMeals();
+  }, []);
+
+  useEffect(() => {
+    let filtered = meals;
+
+    if (filter !== "All") {
+      filtered = filtered.filter(meal => meal.strCategory === filter);
+    }
+
+    if (searchTerm) {
+      filtered = filtered.filter(meal =>
+        meal.strMeal.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    const start = (currentPage - 1) * mealsPerPage;
+    const end = currentPage * mealsPerPage;
+    setDisplayedMeals(filtered.slice(start, end));
+  }, [meals, filter, searchTerm, currentPage]);
+
+  async function fetchMealDetails(id) {
+    const res = await fetch(`${baseUrl}lookup.php?i=${id}`);
+    const data = await res.json();
+    setSelectedMeal(data.meals[0]);
+    window.scrollTo(0, 0);
   }
 
   function handleSearch(e) {
-    const value = e.target.value;
-    setSearchTerm(value);
-
-    if (value) {
-      getMovies(searchApi + encodeURIComponent(value), 1);
-    } else {
-      getMovies(popularApi, 1);
-    }
+    setSearchTerm(e.target.value);
+    setCurrentPage(1);
+    setSelectedMeal(null);
   }
 
-  function handleSort(e) {
-    const value = e.target.value;
-    setSortValue(value);
-
-    if (value) {
-      getMovies(`${baseUrl}/discover/movie?api_key=${apiKey}&sort_by=${value}`, 1);
-    } else {
-      getMovies(popularApi, 1);
-    }
+  function handleFilterChange(e) {
+    setFilter(e.target.value);
+    setCurrentPage(1);
+    setSelectedMeal(null);
   }
 
-  function prevPage() {if (currentPage > 1) getMovies(lastUrl, currentPage - 1);}
-  function nextPage() {if (currentPage < totalPages) getMovies(lastUrl, currentPage + 1);}
+  function prevPage() {
+    if (currentPage > 1) setCurrentPage(currentPage - 1);
+  }
+
+  function nextPage() {
+    const totalPages = Math.ceil(
+      (filter === "All"
+        ? meals.length
+        : meals.filter(meal => meal.strCategory === filter).length) /
+        mealsPerPage
+    );
+    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+  }
 
   return (
     <div>
       <header id="header">
-        <h1 id="logo">Movie Explorer</h1>
-
+        <h1 id="logo">Recipe Explorer</h1>
         <nav id="nav">
-          <form id="form" onSubmit={(e) => e.preventDefault()}>
-            <input type="text" id="search" placeholder="Search for a movie..." value={searchTerm} onChange={handleSearch} autoComplete="off"/>
-          </form>
-
-          <select id="sort" value={sortValue} onChange={handleSort}>
-            <option value="">Sort By</option>
-            <option value="primary_release_date.asc">Release Date (Asc)</option>
-            <option value="primary_release_date.desc">Release Date (Desc)</option>
-            <option value="vote_average.asc">Rating (Asc)</option>
-            <option value="vote_average.desc">Rating (Desc)</option>
-          </select>
+          <div id="form">
+            <input
+              type="text"
+              id="search"
+              placeholder="Search for a meal..."
+              value={searchTerm}
+              onChange={handleSearch}
+              autoComplete="off"
+            />
+            <button onClick={() => setCurrentPage(1)}>Search</button>
+            <select value={filter} onChange={handleFilterChange}>
+              <option value="All">All Categories</option>
+              {categories.map(cat => (
+                <option key={cat} value={cat}>{cat}</option>
+              ))}
+            </select>
+          </div>
         </nav>
       </header>
 
-      <main id="main">
-        {movies.map((movie, index) => (
-          <div className="movie" key={index}>
-            <div className="poster">
-              <img src={imgPath + movie.poster_path} alt={movie.title}/>
-            </div>
-            <div className="movieInfo">
-              <h2>{movie.title}</h2>
-              <p>Release Date: {movie.release_date}</p>
-              <span>Rating: {movie.vote_average}</span>
-            </div>
+      <main id="main" className={selectedMeal ? "full" : ""}>
+        {selectedMeal ? (
+          <div className="meal-details">
+            <h2>{selectedMeal.strMeal}</h2>
+            <img src={selectedMeal.strMealThumb} alt={selectedMeal.strMeal} />
+            <h3>Ingredients:</h3>
+            <ul>
+              {Array.from({ length: 20 }).map((_, i) => {
+                const ingredient = selectedMeal[`strIngredient${i + 1}`];
+                const measure = selectedMeal[`strMeasure${i + 1}`];
+                if (ingredient && ingredient.trim() !== "")
+                  return <li key={i}>{ingredient} - {measure}</li>;
+                return null;
+              })}
+            </ul>
+            <h3>Instructions:</h3>
+            <p>{selectedMeal.strInstructions}</p>
           </div>
-        ))}
+        ) : (
+          displayedMeals.map(meal => (
+            <div
+              className="meal-card"
+              key={meal.idMeal}
+              onClick={() => fetchMealDetails(meal.idMeal)}
+            >
+              <img src={meal.strMealThumb} alt={meal.strMeal} />
+              <h3>{meal.strMeal}</h3>
+            </div>
+          ))
+        )}
       </main>
 
-      <div id="pagination">
-        <button id="prev" onClick={prevPage} disabled={currentPage === 1}>Previous</button>
-        <span id="pageNumber">Page {currentPage} of {totalPages}</span>
-        <button id="next" onClick={nextPage} disabled={currentPage === totalPages}>Next</button>
-      </div>
+      {!selectedMeal && (
+        <div id="pagination">
+          <button onClick={prevPage} disabled={currentPage === 1}>Previous</button>
+          <span id="pageNumber">
+            Page {currentPage} of {Math.ceil(
+              (filter === "All"
+                ? meals.length
+                : meals.filter(meal => meal.strCategory === filter).length) /
+              mealsPerPage
+            )}
+          </span>
+          <button onClick={nextPage} disabled={currentPage === Math.ceil(
+            (filter === "All"
+              ? meals.length
+              : meals.filter(meal => meal.strCategory === filter).length) /
+            mealsPerPage
+          )}>Next</button>
+        </div>
+      )}
     </div>
   );
 }

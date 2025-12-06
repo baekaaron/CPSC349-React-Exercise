@@ -2,114 +2,156 @@ body {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
+  background-color: #f4ede0;
+  color: #5a4630;
 }
 
 #header {
-  background-color: #2B3E4D;
-  min-width: 100%;
-  min-height: 150px;
-  margin-top: -35px;
+  background-color: #7f6b53;
+  width: 100%;
+  padding: 40px 0 10px 0;
+  margin: 0;
+  box-sizing: border-box;
 }
 
 #logo {
   font-size: 3rem;
   font-weight: bold;
+  color: #fff3e0;
   text-align: center;
-  color: white;
-  padding-top: 40px;
-  padding-bottom: 10px;
 }
 
 #nav {
-  background-color: #33485F;
-  min-width: 100%;
+  background-color: #9e8561;
+  width: 100%;
   min-height: 75px;
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
 }
 
 #form {
-  display: inline-block;
+  display: flex;
+  gap: 10px;
+  align-items: center;
 }
 
 #search {
   font-size: 16px;
-  text-align: left;
-  width: 165px;
-  height: 15px;
-  border-radius: 10px;
-  margin-top: 15px;
-  padding: 10px;
-  margin-right: 10px;
-}
-
-#sort {
-  display: inline-block;
-  width: 190px;
+  width: 200px;
   padding: 8px;
   border-radius: 10px;
+  border: 1px solid #5a4630;
+}
+
+#form button {
+  padding: 8px 15px;
   font-size: 16px;
-  text-align: left;
+  border-radius: 10px;
+  border: none;
+  background-color: #5a4630;
+  color: #fff3e0;
+  cursor: pointer;
+}
+
+select {
+  font-size: 16px;
+  padding: 8px;
+  border-radius: 10px;
+  border: 1px solid #5a4630;
+  background-color: #fff3e0;
+  color: #5a4630;
 }
 
 #main {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 0.5rem;
-  padding: 1rem;
-  background-color: #EDEDED;
+  gap: 1rem;
+  padding: 2rem;
+  justify-items: center;
 }
 
-.movie {
+#main.full {
+  display: block;
+  padding: 3rem 1rem;
+}
+
+.meal-card {
+  background-color: #fff3e0;
+  border-radius: 10px;
   overflow: hidden;
-  border-radius: 10px;
-  background-color: white;
-  margin: 5px;
-}
-
-.poster {
-  align-items: center;
-  padding: 15px;
-  justify-content: center;
-  display: flex;
-}
-
-.poster img {
-  border-radius: 10px;
-  width: 200px;
-  height: 100%;
-  object-fit: cover;
-  display: fixed;
-}
-
-.movieInfo {
-  margin-top: -30px;
-  margin-bottom: 15px;
   text-align: center;
-  overflow: hidden;
-  object-fit: contain;
-  padding: 10px;
+  cursor: pointer;
+  width: 200px;
+  box-shadow: 2px 2px 8px rgba(0,0,0,0.15);
+  transition: transform 0.2s;
+}
+
+.meal-card:hover {
+  transform: scale(1.05);
+}
+
+.meal-card img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+}
+
+.meal-card h3 {
+  margin: 10px 5px;
+}
+
+.meal-details {
+  background-color: #fff3e0;
+  padding: 40px;
+  border-radius: 10px;
+  max-width: 800px;
+  margin: 2rem auto;
+  text-align: center;
+  box-shadow: 2px 2px 12px rgba(0,0,0,0.25);
+}
+
+.meal-details img {
+  width: 100%;
+  max-width: 500px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.meal-details ul {
+  text-align: left;
+  padding-left: 20px;
+  margin-bottom: 20px;
 }
 
 #pagination {
+  display: flex;
   justify-content: center;
   align-items: center;
-  display: flex;
-  background-color: #EDEDED;
-  min-height: 100px;
   gap: 1rem;
-  font-size: 20px;
+  padding: 20px 0;
 }
 
 #pagination button {
-  background-color: #3297D9;
-  color: white;
-  border-radius: 10px;
-  border-width: 0px;
-  padding: 0.5rem 1rem;
+  padding: 8px 15px;
   font-size: 16px;
+  border-radius: 10px;
+  border: none;
+  background-color: #5a4630;
+  color: #fff3e0;
+  cursor: pointer;
 }
 
 #pagination button:hover {
-  background-color: #4A799A;
-  cursor: pointer;
+  background-color: #3f2f20;
+}
+
+#pagination button:disabled {
+  background-color: #a79c8b;
+  cursor: default;
+}
+
+#pageNumber {
+  font-size: 18px;
 }
